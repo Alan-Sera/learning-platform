@@ -34,6 +34,9 @@ jobs:
 
       - name: ESLint analysis
         run: pnpm exec eslint .
+      
+      - name: Generate Next.js types
+        run: pnpm exec next typegen
 
       - name: TypeScript type-check
         run: pnpm exec tsc --noEmit
