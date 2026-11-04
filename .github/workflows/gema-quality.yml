@@ -41,5 +41,8 @@ jobs:
       - name: TypeScript type-check
         run: pnpm exec tsc --noEmit
 
+      - name: Unit and component tests
+        run: pnpm test
+
       - name: Dependency vulnerability audit (HIGH or CRITICAL)
         run: pnpm audit --audit-level high
