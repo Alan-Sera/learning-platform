@@ -14,5 +14,5 @@ const statusConfig = {
 export function StatusIndicator({ status, label, className }: StatusIndicatorProps) {
   const config = statusConfig[status];
   const Icon = config.icon;
-  return <span className={cn("inline-flex items-center gap-2 text-small text-neutral-900", className)}>{status === "now-playing" ? <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" className="text-primary-500"><circle cx="10" cy="10" r="9" fill="currentColor" /><path d="m8 5 7 5-7 5V5Z" fill="white" /></svg> : Icon ? <Icon size={18} strokeWidth={2} aria-hidden="true" className={config.className} /> : <span aria-hidden="true" className="size-[18px] rounded-full border-2 border-primary-500 border-r-transparent" />}{label ?? config.label}</span>;
+  return <span className={cn("inline-flex items-center gap-2 text-small text-neutral-900", className)}>{status === "now-playing" ? <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" className="text-primary-500"><circle cx="10" cy="10" r="9" fill="currentColor" /><path d="m8 5 7 5-7 5V5Z" fill="white" /></svg> : Icon ? <Icon size={18} strokeWidth={2} aria-hidden="true" className={config.className} /> : <span aria-hidden="true" className="size-4.5 rounded-full border-2 border-primary-500 border-r-transparent" />}{label ?? config.label}</span>;
 }
