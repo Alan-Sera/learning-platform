@@ -1,69 +1,43 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import { ArrowRight, Bell, Star } from "lucide-react";
+import { Navbar } from "@/components/nav/navbar";
+import { CourseCard } from "@/components/cards/course-card";
+import { HomeSearch } from "@/components/home/home-search";
+import { buttonStyles } from "@/components/ui/button";
+import { homeCourses } from "@/lib/home-courses";
+import styles from "./home.module.css";
+
+export const metadata: Metadata = {
+  title: "Vertex — Search your learning in plain English",
+  description: "Explore courses on Next.js, Docker, and TypeScript. New courses and lessons added every week.",
+};
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-neutral-50 font-sans">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white sm:items-start sm:text-left">
-        <Image
-          className="h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-neutral-900">
-            To get started, edit the{" "}
-            <code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[0.9em]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-neutral-700">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-neutral-900"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-neutral-900"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-neutral-900 px-5 text-white transition-colors hover:bg-neutral-700 md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-neutral-200 px-5 transition-colors hover:bg-neutral-100 md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+  return <div className={styles.canvas}>
+    <div className={styles.frame}>
+      <header className={styles.header}>
+        <Navbar variant="home" logoHref="/" items={[{ label: "Courses", href: "#courses" }, { label: "My Learning" }]}
+          actions={<><Bell aria-hidden="true" size={24} strokeWidth={1.5} /><Image src="/images/vertex/avatar.jpg" alt="Sample profile portrait" width={50} height={50} className={styles.avatar} loading="eager" /></>} />
+      </header>
+      <main>
+        <section className={styles.hero} aria-labelledby="hero-heading">
+          <p className={styles.eyebrow}>Intelligent Learning</p>
+          <h1 id="hero-heading" className={styles.heading}>Search your learning<br />in plain English.</h1>
+          <p className={styles.subtitle}>Vertex understands what you want to learn and finds the exact lessons across all your courses.</p>
+          <a href="#courses" className={buttonStyles({ className: styles.cta })}>Explore Courses<ArrowRight size={24} strokeWidth={1.5} aria-hidden="true" /></a>
+          <div className={styles.search}><HomeSearch /></div>
+        </section>
+        <section id="courses" className={styles.courses} aria-labelledby="courses-heading">
+          <div className={styles.sectionHeading}>
+            <h2 id="courses-heading">All Courses</h2>
+            <a href="#courses">View all courses<ArrowRight size={20} strokeWidth={1.5} aria-hidden="true" /></a>
+          </div>
+          <div className={styles.grid}>{homeCourses.map(course => <CourseCard key={course.id} {...course} variant="catalog" />)}</div>
+          <div className={styles.note}><Star size={24} strokeWidth={1.25} aria-hidden="true" /><p>New courses and lessons added every week.</p></div>
+        </section>
+        <div className={styles.decoration} aria-hidden="true"><div className={styles.bars}>{[88, 122, 152, 188, 134, 98, 0, 0, 64, 86, 116, 152, 188, 96, 134, 168].map((height, index) => <span key={index} style={{ height }} />)}</div></div>
       </main>
     </div>
-  );
+  </div>;
 }

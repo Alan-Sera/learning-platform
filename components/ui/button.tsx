@@ -15,6 +15,10 @@ const variants: Record<ButtonVariant, string> = {
   text: "bg-transparent text-primary-500 hover:text-primary-600 disabled:bg-transparent disabled:text-primary-300",
 };
 
+export function buttonStyles({ variant = "primary", size = "lg", className }: Pick<ButtonProps, "variant" | "size" | "className"> = {}) {
+  return cn("inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md text-body font-medium transition-colors disabled:cursor-not-allowed", size === "lg" ? "px-4" : "px-3", variants[variant], className);
+}
+
 export function Button({ variant = "primary", size = "lg", className, type = "button", ...props }: ButtonProps) {
-  return <button type={type} className={cn("inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md text-body font-medium transition-colors disabled:cursor-not-allowed", size === "lg" ? "px-4" : "px-3", variants[variant], className)} {...props} />;
+  return <button type={type} className={buttonStyles({ variant, size, className })} {...props} />;
 }
