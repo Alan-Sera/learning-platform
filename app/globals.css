@@ -22,6 +22,13 @@
   --color-panel-border: #f4efec;
   --color-swatch-border: #eee8e4;
   --color-radius-border: #e9ded7;
+  --color-home-canvas: #fbf8f5;
+  --color-home-border: #f0e3da;
+  --color-home-ink: #080b0a;
+  --color-home-muted: #555d6c;
+  --color-home-placeholder: #8a8f9c;
+  --color-home-accent: #ef6a43;
+  --color-home-link: #cc430f;
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;

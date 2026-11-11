@@ -1,0 +1,18 @@
+.home { min-height: 98px; padding: 20px 32px 20px 40px; gap: 24px 42px; }
+.brand { display: inline-flex; margin-right: 20px; }
+.logo { gap: 10px; }
+.logo > svg { width: 32px; height: 36px; }
+.logo > svg > path:first-child { color: var(--color-home-accent); }
+.item { color: var(--color-home-ink); font-size: 16px; font-weight: 400; }
+.actions { display: flex; align-items: center; gap: 22px; margin-left: auto; }
+@media (max-width: 767px) {
+  .home { padding: 18px 22px; gap: 18px 24px; }
+  .brand { margin-right: 0; }
+  .actions { gap: 14px; }
+}
+@media (max-width: 479px) {
+  .home { display: grid; grid-template-columns: 1fr auto; padding: 16px 20px; gap: 16px 24px; }
+  .brand { grid-area: 1 / 1; }
+  .actions { grid-area: 1 / 2; }
+  .item { grid-row: 2; }
+}
