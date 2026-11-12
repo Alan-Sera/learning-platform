@@ -11,8 +11,8 @@
   .actions { gap: 14px; }
 }
 @media (max-width: 479px) {
-  .home { display: grid; grid-template-columns: 1fr auto; padding: 16px 20px; gap: 16px 24px; }
+  .home { display: grid; grid-template-columns: 1fr auto; padding: 16px 20px; gap: 16px 12px; }
   .brand { grid-area: 1 / 1; }
-  .actions { grid-area: 1 / 2; }
+  .actions { grid-area: 1 / 2; gap: 8px; }
   .item { grid-row: 2; }
 }

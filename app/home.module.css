@@ -1,7 +1,6 @@
 .canvas { background: repeating-linear-gradient(135deg, var(--color-home-border) 0 1px, var(--color-home-canvas) 1px 9px); color: var(--color-home-ink); }
 .frame { width: calc(100% - 60px); max-width: 1440px; margin-inline: auto; border-inline: 1px solid var(--color-home-border); background: var(--color-home-canvas); }
 .header { border-bottom: 1px solid var(--color-home-border); }
-.avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
 .hero { padding: 66px 32px 53px; text-align: center; border-bottom: 1px solid var(--color-home-border); }
 .eyebrow { display: inline-block; padding: 10px 14px; border: 1px solid var(--color-home-border); border-radius: 8px; color: var(--color-home-link); font-size: 12px; line-height: 18px; letter-spacing: 1.6px; text-transform: uppercase; }
 .heading { margin-top: 26px; font-family: var(--font-playfair), Georgia, serif; font-size: 62px; line-height: 1.18; font-weight: 500; letter-spacing: -2.4px; }
@@ -44,5 +43,4 @@
   .note p { max-width: 230px; }
   .note::before, .note::after { display: none; }
   .decoration { height: 180px; }
-  .avatar { width: 40px; height: 40px; }
 }
