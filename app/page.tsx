@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { ArrowRight, Bell, Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { Navbar } from "@/components/nav/navbar";
 import { CourseCard } from "@/components/cards/course-card";
 import { HomeSearch } from "@/components/home/home-search";
+import { AuthControls } from "@/components/auth/auth-controls";
 import { buttonStyles } from "@/components/ui/button";
 import { homeCourses } from "@/lib/home-courses";
 import styles from "./home.module.css";
@@ -18,7 +18,7 @@ export default function Home() {
     <div className={styles.frame}>
       <header className={styles.header}>
         <Navbar variant="home" logoHref="/" items={[{ label: "Courses", href: "#courses" }, { label: "My Learning" }]}
-          actions={<><Bell aria-hidden="true" size={24} strokeWidth={1.5} /><Image src="/images/vertex/avatar.jpg" alt="Sample profile portrait" width={50} height={50} className={styles.avatar} loading="eager" /></>} />
+          actions={<AuthControls />} />
       </header>
       <main>
         <section className={styles.hero} aria-labelledby="hero-heading">
