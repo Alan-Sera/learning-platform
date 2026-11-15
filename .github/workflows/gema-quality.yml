@@ -1,4 +1,5 @@
-name: GEMA Quality - Baseline
+
+name: GEMA Quality v1.3
 
 on:
   pull_request:
@@ -11,7 +12,7 @@ permissions:
 
 jobs:
   quality-and-dependencies:
-    name: ESLint + TypeScript + Dependency Audit
+    name: ESLint + TypeScript + Tests + Build + Audit
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 
@@ -19,7 +20,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      # Requires package.json with "packageManager": "pnpm@<your-project-version>".
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
 
@@ -32,9 +32,12 @@ jobs:
       - name: Install dependencies (locked)
         run: pnpm install --frozen-lockfile
 
+      - name: Check peer dependencies
+        run: pnpm peers check
+
       - name: ESLint analysis
         run: pnpm exec eslint .
-      
+
       - name: Generate Next.js types
         run: pnpm exec next typegen
 
@@ -43,6 +46,16 @@ jobs:
 
       - name: Unit and component tests
         run: pnpm test
+
+      - name: Production build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ vars.CLERK_CI_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" ]; then
+            echo "::error::Configure the CLERK_CI_PUBLISHABLE_KEY repository variable."
+            exit 1
+          fi
+          pnpm build
 
       - name: Dependency vulnerability audit (HIGH or CRITICAL)
         run: pnpm audit --audit-level high
