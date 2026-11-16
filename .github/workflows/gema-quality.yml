@@ -50,9 +50,15 @@ jobs:
       - name: Production build
         env:
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ vars.CLERK_CI_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.SANITY_CI_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: production
         run: |
           if [ -z "$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" ]; then
-            echo "::error::Configure the CLERK_CI_PUBLISHABLE_KEY repository variable."
+            echo "::error::Missing Clerk CI publishable key."
+            exit 1
+          fi
+          if [ -z "$NEXT_PUBLIC_SANITY_PROJECT_ID" ]; then
+            echo "::error::Missing Sanity CI project ID."
             exit 1
           fi
           pnpm build
