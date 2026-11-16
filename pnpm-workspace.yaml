@@ -1,3 +1,16 @@
 allowBuilds:
+  esbuild: true
   sharp: false
   unrs-resolver: false
+
+# Temporary compatibility exception for Sanity tooling.
+peerDependencyRules:
+  allowedVersions:
+    "tsconfck@3.1.6>typescript": "6.0.3"
+
+# Security fixes for transitive Sanity dependencies.
+overrides:
+  "@sanity/runtime-cli>adm-zip": "0.6.1"
+  "@vercel/frameworks>js-yaml": "3.15.2"
+  "typeid-js@1.2.0>uuid": "11.1.1"
+  "@oclif/core@4.14.0>minimatch": "11.0.8"
