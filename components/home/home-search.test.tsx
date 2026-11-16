@@ -12,17 +12,51 @@ describe("HomeSearch", () => {
   });
 
   it("does not steal focus from another editable control", () => {
-    render(<><HomeSearch /><textarea aria-label="Notes" /><div contentEditable aria-label="Editor"><span>Editable text</span></div></>);
+    render(
+      <>
+        <HomeSearch />
+        <textarea aria-label="Notes" />
+        <div contentEditable aria-label="Editor" />
+      </>
+    );
+
+    // Verify that the shortcut does not interrupt a textarea.
     const notes = screen.getByRole("textbox", { name: "Notes" });
     notes.focus();
-    const event = new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true, cancelable: true });
+
+    const event = new KeyboardEvent("keydown", {
+      key: "k",
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+
     fireEvent(notes, event);
+
     expect(notes).toHaveFocus();
     expect(event.defaultPrevented).toBe(false);
+
+    // Create editable content without React-managed children.
     const editor = screen.getByLabelText("Editor");
+    const editableText = document.createElement("span");
+
+    editableText.textContent = "Editable text";
+    editor.appendChild(editableText);
+
+    // Verify that the shortcut does not interrupt contentEditable.
     editor.focus();
-    fireEvent.keyDown(screen.getByText("Editable text"), { key: "k", metaKey: true });
+
+    const editorEvent = new KeyboardEvent("keydown", {
+      key: "k",
+      metaKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+
+    fireEvent(editableText, editorEvent);
+
     expect(editor).toHaveFocus();
+    expect(editorEvent.defaultPrevented).toBe(false);
   });
 
   it("ignores composition and unrelated key combinations", () => {
