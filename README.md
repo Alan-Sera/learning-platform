@@ -412,3 +412,90 @@ Deployment configuration may evolve as the infrastructure is finalized.
 GEMA Vertex is under active development.
 
 Features, architecture, and documentation will continue to evolve as the platform grows.
+
+## Sanity content and standalone Studio
+
+The Next.js application is the repository's root package. `studio/` is a separate Sanity authoring package in the pnpm workspace, with its own Vite development server, build, and deployment. The former embedded `/studio` route has been removed.
+
+The existing project is **GEMA-vertex** (`2xjwyukn`), using the **private** `production` dataset. Studio authors sign in with Sanity project membership; learners continue to use Clerk.
+
+```text
+course document
+  +-- instructor ? instructor document
+  +-- category ? category document
+  +-- modules[] (ordered embedded objects)
+        +-- lessons[] ? lesson documents (ordered references)
+```
+
+Courses hold the marketing fields, price/currency, outcomes, and curriculum. Lessons hold provider video URLs, duration in seconds, Portable Text notes, key points, tips, and resources. Instructor biographies also use Portable Text. Images have alt text and crop/hotspot support. Module and lesson numbers, counts, and total duration are derived; lessons do not store parent course IDs. A lesson can belong to multiple courses, but may occur only once within each course. Prices use major currency units (for example, `49.99` USD), with USD as the initial currency.
+
+### Local setup
+
+```bash
+pnpm install
+```
+
+Create `studio/.env.local` from the variable names in `studio/.env.example`. Only public identifiers belong there:
+
+```dotenv
+SANITY_STUDIO_PROJECT_ID=2xjwyukn
+SANITY_STUDIO_DATASET=production
+```
+
+The root `.env.local` requires `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, and a server-only `SANITY_API_READ_TOKEN` with Viewer access. Use `.env.example` as the canonical variable list. Never put a token in `NEXT_PUBLIC_*` or `SANITY_STUDIO_*` variables. Actual environment files remain ignored.
+
+Run the apps in separate terminals:
+
+```bash
+pnpm dev
+pnpm studio:dev
+```
+
+Web: http://localhost:3000. Studio: http://localhost:3333. The Studio's configuration does not import the web environment or read token. Sanity's private dataset protects document reads; Sanity image/file CDN assets are still publicly addressable, so do not upload confidential files expecting dataset privacy to protect them.
+
+### Server data access
+
+Server Components and server modules can import these functions from `sanity/lib/data.ts`:
+
+- `getCourses({ offset?, limit? })`
+- `getCourseBySlug(slug)`
+- `getLessonBySlug(slug)`
+- `getCourseLessonContext(courseSlug, lessonSlug)`
+- `getInstructors({ offset?, limit? })` and `getInstructorBySlug(slug)`
+- `getCategories({ offset?, limit? })` and `getCategoryBySlug(slug)`
+
+List results contain `items` and `total`; the default page size is 24 and the maximum is 100. Slugs and pagination are validated before querying. Detail functions return `null` when missing. Configuration, network, and authorization errors are propagated, not converted to empty content.
+
+`getCourseLessonContext` uses reverse references and the supplied course slug to resolve a reused lesson correctly. It derives `moduleNumber`, `lessonNumber`, and `lessonLabel` from the authored arrays. Course/list projections omit full lesson notes and preserve array keys and order. Missing/unpublished referenced lessons remain nullable.
+
+The credentialed client, fetch wrapper, and data entry points use `server-only`. They read only the published perspective, disable stega and the Sanity CDN, and use `cache: 'no-store'`. Configuration is checked when a read is requested, so unused integration code does not require credentials during a web build. When consuming an uncached read in a page, put that content behind a nearby React `Suspense` boundary because Cache Components is enabled.
+
+The current home page continues to use local fixtures. This task does not implement search, live preview, a browser content client, content writes, transcript ingestion, or video playback.
+
+### Schema types and checks
+
+```bash
+pnpm sanity:typegen
+pnpm studio:check
+pnpm studio:build
+pnpm exec tsc --noEmit
+pnpm lint
+pnpm test
+pnpm build
+pnpm sanity:smoke
+```
+
+The Studio CLI config owns TypeGen. It extracts `studio/schema.json`, scans `sanity/lib/queries.ts`, and writes `sanity/types.ts`. Keep both generated artifacts in Git and regenerate after schema/query changes. CI regenerates them and checks for drift, then checks both applications. Existing pnpm overrides, peer checks, and audits remain active. No private read token is needed for ordinary CI builds; `SANITY_CI_PROJECT_ID` is the existing repository variable used for public project configuration.
+
+`sanity:smoke` loads the root local environment internally and exercises the real read layer, checks the published perspective, and confirms an invalid token is rejected. It does not create or publish content or print credentials. Empty production content is reported as empty; populated relationships are covered by local GROQ fixtures in the automated tests.
+
+### Authoring and deployment
+
+Create categories and instructors, then lessons, then a course containing ordered modules and lesson references. Incomplete drafts can be saved; required fields, safe URLs, positive duration, non-negative counts/prices, and unique curriculum references are validated before publication.
+
+```bash
+pnpm --dir studio exec sanity schemas validate
+pnpm --dir studio deploy
+```
+
+The approved hosted Studio name is `gema-vertex.sanity.studio`. Deploy the actual Studio app and schema together. Sanity project members authorize in the Studio; no API token is embedded in its bundle. Deployments and changes to dataset privacy should always target the existing project/dataset rather than creating a replacement. No seed content was imported.
