@@ -34,6 +34,8 @@ const eslintConfig = defineConfig([
     ".agents/**",
     ".claude/**",
     "agent/**",
+    "studio/**",
+    "sanity/types.ts",
   ]),
 ]);
 

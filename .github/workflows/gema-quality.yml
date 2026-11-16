@@ -15,6 +15,9 @@ jobs:
     name: ESLint + TypeScript + Tests + Build + Audit
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    env:
+      SANITY_STUDIO_PROJECT_ID: ${{ vars.SANITY_CI_PROJECT_ID }}
+      SANITY_STUDIO_DATASET: production
 
     steps:
       - name: Checkout repository
@@ -34,6 +37,21 @@ jobs:
 
       - name: Check peer dependencies
         run: pnpm peers check
+
+      - name: Generate and verify Sanity contracts
+        run: |
+          if [ -z "$SANITY_STUDIO_PROJECT_ID" ]; then
+            echo "::error::Missing Sanity CI project ID."
+            exit 1
+          fi
+          pnpm sanity:typegen
+          git diff --exit-code -- studio/schema.json sanity/types.ts
+
+      - name: Studio TypeScript, ESLint, and validation tests
+        run: pnpm studio:check
+
+      - name: Standalone Studio production build
+        run: pnpm studio:build
 
       - name: ESLint analysis
         run: pnpm exec eslint .

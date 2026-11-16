@@ -1,10 +1,17 @@
-import { createClient } from 'next-sanity'
+import "server-only";
+import { createClient } from "next-sanity";
+import { getSanityPublicConfig } from "../env";
 
-import { apiVersion, dataset, projectId } from '../env'
+export function getReadClient() {
+  const config = getSanityPublicConfig();
+  const token = process.env.SANITY_API_READ_TOKEN?.trim();
+  if (!token) throw new Error("Missing environment variable: SANITY_API_READ_TOKEN");
 
-export const client = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
-})
+  return createClient({
+    ...config,
+    token,
+    perspective: "published",
+    useCdn: false,
+    stega: false,
+  });
+}
